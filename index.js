@@ -9,6 +9,9 @@ let users = [];
 let products = [];
 let purchases = [];
 
+// Add default admin user
+users.push(new User(1, "admin", "admin", "admin"));
+
 
 app.get('/', (req, res) => {
   res.send('Hello World!');

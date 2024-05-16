@@ -1,3 +1,5 @@
+// products.router.js is used to define the routes for the products API
+
 const express = require('express');
 
 const router = express.Router();

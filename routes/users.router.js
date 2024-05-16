@@ -3,6 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const { User } = require('../model/models');
+const { ReturnDocument } = require('mongodb');
 
 // DB Users (Simulation)
 let users = [];
@@ -38,15 +39,18 @@ router.post('/login', (req, res) => {
     req.session.isLoggedIn = true;
     req.session.user = user;
 
-    if (user.role === 'admin') {
-        return res.redirect('/products');
-    }
-
-    res.redirect('/products');
+    return res.redirect('/users/login');
 });
 
 // Route to get the login form
 router.get('/login', (req, res) => {
+    if (req.session.isLoggedIn) {
+        if (req.session.user.role === 'admin') {
+          return res.redirect('/products/admin');
+        }
+
+        res.redirect('/products');
+    }
     res.render('login');
 });
 

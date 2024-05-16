@@ -6,6 +6,7 @@ const usersRouter = require('./users.router');
 
 function routerApi(app) {
     const router = express.Router();
+    router.get('/', (req, res) => { res.redirect('/users/login'); });
     app.use('', router);
     router.use('/products', productsRouter);
     router.use('/users', usersRouter);

@@ -30,7 +30,7 @@ router.get('/admin', isAuth, (req, res) => {
 });
 
 // Route to add a new product (only for admin users)
-router.post('/add', isAuth, upload.single('image'), (req, res) => {
+router.post('/admin/add', isAuth, upload.single('image'), (req, res) => {
   if (req.session.user.role !== 'admin') {
       return res.status(403).send('Acceso denegado');
   }

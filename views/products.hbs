@@ -1,0 +1,19 @@
+<div class="products-container">
+    <h2>Productos Disponibles</h2>
+    <div class="products-list">
+        {{#each products}}
+        <div class="product-card">
+            <img src="{{this.imageUrl}}" alt="{{this.name}}">
+            <div class="product-info">
+                <h3>{{this.name}}</h3>
+                <p>{{this.description}}</p>
+                <p>Precio: ${{this.price}}</p>
+                <p>Cantidad Disponible: {{this.quantity}}</p>
+                <button class="add-to-cart">
+                    <i class="fas fa-shopping-cart"></i>
+                </button>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</div>

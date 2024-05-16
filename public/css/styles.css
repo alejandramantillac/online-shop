@@ -78,3 +78,54 @@ button[type="submit"] {
 button[type="submit"]:hover {
   background-color: #4d99e0;
 }
+
+/* Admin Page */
+.admin-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.admin-form {
+  background-color: var(--white);
+  box-shadow: var(--box-shadow);
+  border-radius: var(--border-radius);
+  padding: 30px;
+  max-width: 600px;
+  width: 100%;
+}
+
+.admin-form h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--primary-color);
+}
+
+.admin-form .input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.admin-form .input-group i {
+    margin-right: 10px;
+    color: var(--primary-color);
+}
+
+.admin-form .input-group .textarea-wrapper {
+    flex: 1;
+    justify-items: start;
+
+}
+
+.admin-form .input-group textarea {
+  padding: 10px 40px 10px 30px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 16px;
+  resize: none;
+  height: 150px;
+}

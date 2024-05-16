@@ -1,0 +1,26 @@
+<div class="admin-container">
+    <form class="admin-form" method="post" action="/products/add" enctype="multipart/form-data">
+        <h2>Agregar Nuevo Producto</h2>
+        <div class="input-group">
+            <i class="fas fa-box"></i>
+            <input name="name" type="text" placeholder="Nombre del Producto" required>
+        </div>
+        <div class="input-group textarea-wrapper">
+            <i class="fas fa-align-left"></i>
+            <textarea name="description" placeholder="Descripción" required></textarea>
+        </div>
+        <div class="input-group">
+            <i class="fas fa-dollar-sign"></i>
+            <input name="price" type="number" step="0.01" placeholder="Precio" required>
+        </div>
+        <div class="input-group">
+            <i class="fas fa-hashtag"></i>
+            <input name="quantity" type="number" placeholder="Cantidad Disponible" required>
+        </div>
+        <div class="input-group">
+            <i class="fas fa-image"></i>
+            <input name="image" type="file" accept="image/*" required>
+        </div>
+        <button type="submit">Agregar Producto</button>
+    </form>
+</div>

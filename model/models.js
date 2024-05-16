@@ -34,20 +34,21 @@ class User {
 }
 
 class Product {
-  constructor(id, name, description, price, quantity) {
-    this.id = id;
-    this.name = name;
-    this.description = description;
-    this.price = price;
-    this.quantity = quantity;
+  constructor(id, name, description, price, quantity, imageUrl) {
+      this.id = id;
+      this.name = name;
+      this.description = description;
+      this.price = price;
+      this.quantity = quantity;
+      this.imageUrl = imageUrl;
   }
 
   reduceQuantity(amount) {
-    if (this.quantity >= amount) {
-      this.quantity -= amount;
-    } else {
-      throw new Error("Insufficient quantity");
-    }
+      if (this.quantity >= amount) {
+          this.quantity -= amount;
+      } else {
+          throw new Error("Insufficient quantity");
+      }
   }
 }
 

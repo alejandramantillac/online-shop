@@ -23,7 +23,7 @@ router.post('/register', (req, res) => {
     const newUser = new User(users.length + 1, username, password, 'cliente');
     users.push(newUser);
     req.session.user = newUser;
-    res.redirect('/api/v1/products');
+    res.redirect('/products');
 });
 
 // Login route for both admins and clients
@@ -39,10 +39,10 @@ router.post('/login', (req, res) => {
     req.session.user = user;
 
     if (user.role === 'admin') {
-        return res.redirect('/api/v1/products');
+        return res.redirect('/products');
     }
 
-    res.redirect('/api/v1/products');
+    res.redirect('/products');
 });
 
 // Route to get the login form

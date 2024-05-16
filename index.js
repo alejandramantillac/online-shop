@@ -27,6 +27,9 @@ app.set('views', path.join(__dirname, 'views'));
 // Set the directory where the static files are located
 app.use(express.static(path.join(__dirname, "public")));
 
+// Set the directory for uploaded images
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+
 routerApi(app);
 
 app.use(logErrors);

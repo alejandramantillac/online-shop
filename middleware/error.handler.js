@@ -1,3 +1,5 @@
+// error.handler.js is used to define the error handling middleware for the API.
+
 function logErrors (err, req, res, next) {
     console.log('logErrors');
     console.error(err);

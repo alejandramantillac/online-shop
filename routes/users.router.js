@@ -1,3 +1,5 @@
+// users.router.js is used to define the routes for the users API
+
 const express = require('express');
 
 const router = express.Router();

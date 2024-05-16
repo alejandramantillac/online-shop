@@ -1,3 +1,4 @@
+// index.js is the entry point for the routes folder. It will be responsible for defining the routes for the API.
 const express = require('express');
 
 const productsRouter = require('./products.router');

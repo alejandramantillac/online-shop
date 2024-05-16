@@ -43,12 +43,12 @@ router.post('/admin/add', isAuth, upload.single('image'), (req, res) => {
 });
 
 // Route to get all products
-router.get('/view', (req, res) => {
+router.get('', (req, res) => {
   res.render('products', { products });
 });
 
-router.get('/products', (req, res) => {
-    res.send('Products Success!');
+router.get('/api/get', (req, res) => {
+  res.json(products);
 });
 
 router.post('/cart/add', (req, res) => {

@@ -6,6 +6,10 @@ router.post('/login', (req, res) => {
     res.send('Login Success!');
 });
 
+router.get('/login', (req, res) => {
+    res.render('login');
+});
+
 router.post('/register', (req, res) => {
     res.send('Register Success!');
 });

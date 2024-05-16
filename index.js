@@ -7,7 +7,7 @@ const { logErrors, errorHandler } = require('./middleware/error.handler');
 
 const app = express();
 
-// Mddleware session configuration
+// Middleware session configuration
 app.use(session({
     secret: 'your_secret_key',
     resave: false,

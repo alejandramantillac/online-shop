@@ -4,10 +4,14 @@ const express = require('express');
 const router = express.Router();
 const { User } = require('../model/models');
 
-//  DB Users (Simulation)
+// DB Users (Simulation)
 let users = [];
 
-// Register route
+// Predefined admin user
+const adminUser = new User(1, 'admin', 'admin', 'admin');
+users.push(adminUser);
+
+// Register route for clients only
 router.post('/register', (req, res) => {
     const { username, password } = req.body;
 
@@ -19,20 +23,26 @@ router.post('/register', (req, res) => {
     const newUser = new User(users.length + 1, username, password, 'cliente');
     users.push(newUser);
     req.session.user = newUser;
-    res.redirect('/products');
+    res.redirect('/api/v1/products');
 });
 
-// Login route
+// Login route for both admins and clients
 router.post('/login', (req, res) => {
     const { username, password } = req.body;
 
-    const user = users.find(user => user.username === username && user.password === password);
+    const user = User.authenticate(username, password, users);
     if (!user) {
         return res.status(400).send('Usuario o contraseña incorrectos');
     }
 
+    req.session.isLoggedIn = true;
     req.session.user = user;
-    res.redirect('/products');
+
+    if (user.role === 'admin') {
+        return res.redirect('/api/v1/products');
+    }
+
+    res.redirect('/api/v1/products');
 });
 
 // Route to get the login form

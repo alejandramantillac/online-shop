@@ -25,6 +25,12 @@ class User {
   getPurchaseHistory() {
     return this.purchaseHistory;
   }
+
+  // Authentication method
+  static authenticate(username, password, users) {
+    const user = users.find(user => user.username === username && user.password === password);
+    return user ? user : null;
+  }
 }
 
 class Product {

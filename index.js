@@ -1,6 +1,14 @@
 const express = require('express');
+const bodyParser = require("body-parser");
+const { User, Product, Purchase } = require("./model/models");
 const app = express();
 const port = 3000;
+
+app.use(bodyParser.json());
+let users = [];
+let products = [];
+let purchases = [];
+
 
 app.get('/', (req, res) => {
   res.send('Hello World!');

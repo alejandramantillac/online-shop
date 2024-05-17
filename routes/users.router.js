@@ -37,17 +37,13 @@ router.post('/login', (req, res) => {
     req.session.isLoggedIn = true;
     req.session.user = user;
 
-    return res.redirect('/users/login');
+    return res.redirect('/products');
 });
 
-// Route to get the login form
+  // Route to get the login form
 router.get('/login', (req, res) => {
     if (req.session.isLoggedIn) {
         res.cookie('user_id', req.session.user.id);
-        if (req.session.user.role === 'admin') {
-          return res.redirect('/products/admin');
-        }
-
         res.redirect('/products');
     }
     res.render('login');
@@ -64,7 +60,8 @@ router.post('/logout', (req, res) => {
         if (err) {
             return res.status(500).send('Error al cerrar sesión');
         }
-        res.cookie('user_id', req.session.user.id);
+        res.clearCookie('sid');
+        res.clearCookie('user_id');
         res.redirect('/login');
     });
 });

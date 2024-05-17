@@ -1,5 +1,14 @@
 <div class="products-container">
-    <h2>Productos Disponibles</h2>
+    <div class="row">
+      <h2>Productos Disponibles</h2>
+      <!---Validar si el usuario tiene rol "admin"---->
+      <div class="row">
+        {{#if admin}}
+        <button class="button-secondary mr-2" onclick="window.location='/products/admin'">Agregar Producto</button>
+        {{/if}}
+        <button class="button-alert" onclick="logout()">Cerrar sesión</button>
+      </div>
+    </div>
     <div class="products-list">
         {{#each products}}
         <div class="product-card">
@@ -15,6 +24,19 @@
             </div>
         </div>
         {{/each}}
+    </div>
+    <div class="cart">
+      <button class="cart-button" onclick="toggleCart()">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="cart-count">0</span>
+      </button>
+      <div class="cart-content" id="cart">
+        <h3>Carrito de Compras</h3>
+        <ul id="cart-list">
+        </ul>
+        <h3>Total: $<span id="cart-total">0.00</span></h3>
+        <button class="checkout-button" onclick="checkout()">Pagar</button>
+      </div>
     </div>
 </div>
 <script src="/js/products.js"></script>

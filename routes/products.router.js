@@ -41,17 +41,19 @@ router.post('/admin/add', isAuth, upload.single('image'), (req, res) => {
 
 // Route to get all products
 router.get('', isAuth, (req, res) => {
-
-  res.render('products', { "products":Product.products });
+  res.render('products', { "products":Product.products, admin: req.session.user.role === 'admin'  });
 });
 
+// Route to get a json with all products
 router.get('/api/get', (req, res) => {
   res.json(Product.products);
 });
 
-router.post('/cart/add', (req, res) => {
+// Route to add a product to the cart
+router.post('/api/cart/add', (req, res) => {
 
-  const { id, quantity, user_id } = req.body;
+  const { id, quantity } = req.body;
+  const user_id = req.headers['authorization'];
   const product = Product.products.find(product => product.id === parseInt(id));
   if (!product) {
       return res.status(404).send('Product not found');
@@ -61,6 +63,18 @@ router.post('/cart/add', (req, res) => {
       return res.status(400).send('Not enough stock');
   }
   return res.json(User.addToCart(product, quantity, user_id));
+});
+
+// Route to get all products in the cart
+router.get('/api/cart/get', (req, res) => {
+
+  const user_id = req.headers['authorization'];
+  const user = User.users.find(user => user.id === parseInt(user_id));
+  if (!user) {
+      return res.status(404).send('User not found');
+  }
+
+  return res.json(user.cart);
 });
 
 router.post('/buy', (req, res) => {

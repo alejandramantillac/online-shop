@@ -58,8 +58,8 @@ function checkout() {
     },
   })
     .then((res) => res.text())
-    .then((message) => {
-      alert(message);
+    .then((invoiceHtml) => {
+      document.body.innerHTML = invoiceHtml;
     });
 }
 

@@ -41,7 +41,7 @@ router.post('/admin/add', isAuth, upload.single('image'), (req, res) => {
 
 // Route to get all products
 router.get('', isAuth, (req, res) => {
-  res.render('products', { "products":Product.products, admin: req.session.user.role === 'admin'  });
+  res.render('products', { "products": Product.products, admin: req.session.user.role === 'admin' });
 });
 
 // Route to get a json with all products
@@ -51,38 +51,67 @@ router.get('/api/get', (req, res) => {
 
 // Route to add a product to the cart
 router.post('/api/cart/add', (req, res) => {
-
-  const { id, quantity } = req.body;
-  const user_id = req.headers['authorization'];
-  const product = Product.products.find(product => product.id === parseInt(id));
-  if (!product) {
+  try {
+    const { id, quantity } = req.body;
+    const user_id = req.headers['authorization'];
+    const product = Product.products.find(product => product.id === parseInt(id));
+    if (!product) {
       return res.status(404).send('Product not found');
-  }
+    }
 
-  if (product.quantity < quantity) {
+    if (product.quantity < quantity) {
       return res.status(400).send('Not enough stock');
+    }
+
+    const cart = User.addToCart(product, quantity, user_id);
+    res.json(cart);
+  } catch (error) {
+    res.status(500).send(error.message);
   }
-  return res.json(User.addToCart(product, quantity, user_id));
 });
 
 // Route to get all products in the cart
 router.get('/api/cart/get', (req, res) => {
-
-  const user_id = req.headers['authorization'];
-  const user = User.users.find(user => user.id === parseInt(user_id));
-  if (!user) {
+  try {
+    const user_id = req.headers['authorization'];
+    const user = User.users.find(user => user.id === parseInt(user_id));
+    if (!user) {
       return res.status(404).send('User not found');
+    }
+    res.json(user.cart);
+  } catch (error) {
+    res.status(500).send(error.message);
   }
-
-  return res.json(user.cart);
 });
 
 router.post('/buy', (req, res) => {
-    res.send('Payment Success!');
+  try {
+    const user_id = req.headers['authorization'];
+    const user = User.users.find(user => user.id === parseInt(user_id));
+
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    const totalAmount = user.cart.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+    const purchase = new Purchase(Purchase.purchases.length + 1, user.id, user.cart, totalAmount);
+
+    user.cart.forEach(item => {
+      const product = Product.products.find(p => p.id === item.product.id);
+      product.reduceQuantity(item.quantity);
+    });
+
+    User.addPurchase(purchase, user_id);
+    User.clearCart(user_id);
+
+    res.render('invoice', { purchase, user });
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
 });
 
 router.get('/history', (req, res) => {
-    res.send('History Success!');
+  res.send('History Success!');
 });
 
 module.exports = router;

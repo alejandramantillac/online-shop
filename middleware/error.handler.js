@@ -1,18 +1,20 @@
 // error.handler.js is used to define the error handling middleware for the API.
 
-function logErrors (err, req, res, next) {
-    console.log('logErrors');
-    console.error(err);
-    next(err);
+function logErrors(err, req, res, next) {
+  console.log('logErrors');
+  console.error(err);
+  next(err);
+}
+
+function errorHandler(err, req, res, next) {
+  if (res.headersSent) {
+    return next(err);
   }
-  
-  function errorHandler(err, req, res, next) {
-    console.log('errorHandler');
-    res.status(500).json({
-      message: err.message,
-      stack: err.stack,
-    });
-  }
-  
-  
-module.exports = { logErrors, errorHandler }
+  console.log('errorHandler');
+  res.status(500).json({
+    message: err.message,
+    stack: err.stack,
+  });
+}
+
+module.exports = { logErrors, errorHandler };

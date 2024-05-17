@@ -4,9 +4,6 @@ const express = require('express');
 const router = express.Router();
 const { User } = require('../model/models');
 
-// Predefined admin user
-const adminUser = new User(1, 'admin', 'admin', 'admin');
-User.users.push(adminUser);
 
 // Register route for clients only
 router.post('/register', (req, res) => {

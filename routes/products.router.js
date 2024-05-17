@@ -5,10 +5,7 @@ const multer = require('multer');
 const path = require('path');
 const router = express.Router();
 const isAuth = require('../middleware/is-auth');
-const { Product } = require('../model/models');
-
-// DB Products (Simulation)
-let products = [];
+const { Product, User, Purchase } = require('../model/models');
 
 // Multer configuration to upload files
 const storage = multer.diskStorage({
@@ -37,22 +34,33 @@ router.post('/admin/add', isAuth, upload.single('image'), (req, res) => {
 
   const { name, description, price, quantity } = req.body;
   const imageUrl = `/uploads/${req.file.filename}`;
-  const newProduct = new Product(products.length + 1, name, description, price, quantity, imageUrl);
-  products.push(newProduct);
+  const newProduct = new Product(Product.products.length + 1, name, description, price, quantity, imageUrl);
+  Product.products.push(newProduct);
   res.redirect('/products');
 });
 
 // Route to get all products
-router.get('', (req, res) => {
-  res.render('products', { products });
+router.get('', isAuth, (req, res) => {
+
+  res.render('products', { "products":Product.products });
 });
 
 router.get('/api/get', (req, res) => {
-  res.json(products);
+  res.json(Product.products);
 });
 
 router.post('/cart/add', (req, res) => {
-    res.send('Cart Success!');
+
+  const { id, quantity, user_id } = req.body;
+  const product = Product.products.find(product => product.id === parseInt(id));
+  if (!product) {
+      return res.status(404).send('Product not found');
+  }
+
+  if (product.quantity < quantity) {
+      return res.status(400).send('Not enough stock');
+  }
+  return res.json(User.addToCart(product, quantity, user_id));
 });
 
 router.post('/buy', (req, res) => {

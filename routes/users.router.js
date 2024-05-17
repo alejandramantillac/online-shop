@@ -1,29 +1,27 @@
-// users.router.js is used to define the routes for the users API
+// User.users.router.js is used to define the routes for the User.users API
 
 const express = require('express');
 const router = express.Router();
 const { User } = require('../model/models');
-const { ReturnDocument } = require('mongodb');
-
-// DB Users (Simulation)
-let users = [];
 
 // Predefined admin user
 const adminUser = new User(1, 'admin', 'admin', 'admin');
-users.push(adminUser);
+User.users.push(adminUser);
 
 // Register route for clients only
 router.post('/register', (req, res) => {
     const { username, password } = req.body;
 
-    const existingUser = users.find(user => user.username === username);
+    const existingUser = User.users.find(user => user.username === username);
     if (existingUser) {
         return res.status(400).send('El usuario ya existe');
     }
 
-    const newUser = new User(users.length + 1, username, password, 'cliente');
-    users.push(newUser);
+    const newUser = new User(User.users.length + 1, username, password, 'cliente');
+    User.users.push(newUser);
     req.session.user = newUser;
+
+    res.cookie('user_id', req.session.user.id);
     res.redirect('/products');
 });
 
@@ -31,7 +29,7 @@ router.post('/register', (req, res) => {
 router.post('/login', (req, res) => {
     const { username, password } = req.body;
 
-    const user = User.authenticate(username, password, users);
+    const user = User.authenticate(username, password);
     if (!user) {
         return res.status(400).send('Usuario o contraseña incorrectos');
     }
@@ -45,6 +43,7 @@ router.post('/login', (req, res) => {
 // Route to get the login form
 router.get('/login', (req, res) => {
     if (req.session.isLoggedIn) {
+        res.cookie('user_id', req.session.user.id);
         if (req.session.user.role === 'admin') {
           return res.redirect('/products/admin');
         }
@@ -65,6 +64,7 @@ router.post('/logout', (req, res) => {
         if (err) {
             return res.status(500).send('Error al cerrar sesión');
         }
+        res.cookie('user_id', req.session.user.id);
         res.redirect('/login');
     });
 });

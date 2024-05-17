@@ -9,7 +9,7 @@
                 <p>{{this.description}}</p>
                 <p>Precio: ${{this.price}}</p>
                 <p>Cantidad Disponible: {{this.quantity}}</p>
-                <button class="add-to-cart">
+                <button class="add-to-cart" onclick="addToCart({{this.id}})">
                     <i class="fas fa-shopping-cart"></i>
                 </button>
             </div>
@@ -17,3 +17,4 @@
         {{/each}}
     </div>
 </div>
+<script src="/js/products.js"></script>

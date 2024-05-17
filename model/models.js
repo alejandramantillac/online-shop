@@ -10,27 +10,41 @@ class User {
     this.purchaseHistory = [];
   }
 
-  addToCart(product) {
-    this.cart.push(product);
+  static addToCart(product, quantity = 1, user_id) {
+    const user = User.users.find(user => user.id === parseInt(user_id));
+    const productInCart = user.cart.find(item => item.product.id === product.id);
+
+    if (productInCart) {
+      productInCart.quantity += quantity;
+    } else {
+      user.cart.push({ product, quantity });
+    }
+
+    return user.cart;
   }
 
-  clearCart() {
-    this.cart = [];
+  static clearCart(user_id) {
+    const user = User.users.find((user) => user.id === parseInt(user_id));
+    user.cart = [];
   }
 
-  addPurchase(purchase) {
-    this.purchaseHistory.push(purchase);
+  static addPurchase(purchase, user_id) {
+    const user = User.users.find((user) => user.id === parseInt(user_id));
+    user.purchaseHistory.push(purchase);
   }
 
-  getPurchaseHistory() {
-    return this.purchaseHistory;
+  static getPurchaseHistory(user_id) {
+    const user = User.users.find((user) => user.id === parseInt(user_id));
+    return user.purchaseHistory;
   }
 
   // Authentication method
-  static authenticate(username, password, users) {
-    const user = users.find(user => user.username === username && user.password === password);
+  static authenticate(username, password) {
+    const user = User.users.find(user => user.username === username && user.password === password);
     return user ? user : null;
   }
+
+  static users = [];
 }
 
 class Product {
@@ -50,6 +64,8 @@ class Product {
           throw new Error("Insufficient quantity");
       }
   }
+
+  static products = [];
 }
 
 class Purchase {

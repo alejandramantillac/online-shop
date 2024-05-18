@@ -1,3 +1,8 @@
+/**
+ * Retrieves the value of a cookie by its name.
+ * @param {string} name - The name of the cookie.
+ * @returns {string|null} The value of the cookie, or null if the cookie doesn't exist.
+ */
 function getCookie(name) {
   const cookie = document.cookie
     .split(';')
@@ -5,6 +10,11 @@ function getCookie(name) {
   return cookie ? cookie.split('=')[1] : null;
 }
 
+/**
+ * Adds a product to the cart.
+ * @param {string} id - The ID of the product to add.
+ * @param {number} [quantity=1] - The quantity of the product to add (default is 1).
+ */
 function addToCart(id, quantity = 1) {
   fetch('/products/api/cart/add', {
     method: 'POST',
@@ -39,6 +49,9 @@ functions for this html:
 
 */
 
+/**
+ * Toggles the visibility of the cart content and loads the cart if it's displayed.
+ */
 function toggleCart() {
   const cart = document.querySelector('.cart-content');
   if (cart.style.display === 'block') {
@@ -49,6 +62,10 @@ function toggleCart() {
   }
 }
 
+/**
+ * Performs the checkout process by sending a POST request to '/products/buy' endpoint
+ * and updates the document body with the received invoice HTML.
+ */
 function checkout() {
   fetch('/products/buy', {
     method: 'POST',
@@ -63,6 +80,10 @@ function checkout() {
     });
 }
 
+/**
+ * Loads the user's cart by making a GET request to the '/products/api/cart' endpoint.
+ * Updates the cart list and total on the page.
+ */
 function loadCart() {
   fetch('/products/api/cart',{
     method: 'GET',
@@ -87,20 +108,36 @@ function loadCart() {
     });
 }
 
-// Function to navigate to purchase history page
+/**
+ * Redirects the user to the purchase history page.
+ */
 function viewPurchaseHistory() {
   window.location.href = '/products/history';
 }
 
+/**
+ * Logs out the user by sending a POST request to the server and redirecting to the login page.
+ */
 function logout(){
   fetch('/users/logout', {
     method: 'POST',
   })
     .then(() => {
-      // Redirige al usuario a la página de inicio de sesión después de que la sesión se haya cerrado
       window.location.href = '/users/login';
     })
     .catch((error) => {
       console.error('Error:', error);
     });
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+  /**
+   * Represents a collection of purchase date elements.
+   * @type {NodeList}
+   */
+  const dateElements = document.querySelectorAll('.purchase-date');
+  dateElements.forEach(function(element) {
+    const date = new Date(element.textContent);
+    element.textContent = date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+  });
+});

@@ -1,5 +1,9 @@
 // models.js
 
+/**
+ * Represents a user in the online shop.
+ */
+
 class User {
   constructor(id, username, password, role) {
     this.id = id;
@@ -10,6 +14,14 @@ class User {
     this.purchaseHistory = [];
   }
 
+  /**
+   * Adds a product to the user's cart.
+   * @param {Object} product - The product to be added to the cart.
+   * @param {number} [quantity=1] - The quantity of the product to be added. Defaults to 1.
+   * @param {number} user_id - The ID of the user.
+   * @returns {Array} - The updated cart of the user.
+   * @throws {Error} - If the user is not found or there is not enough stock.
+   */
   static addToCart(product, quantity = 1, user_id) {
     const user = User.users.find(user => user.id === parseInt(user_id));
     if (!user) {
@@ -31,22 +43,41 @@ class User {
     return user.cart;
   }
 
+  /**
+   * Clears the cart for a specific user.
+   * @param {number} user_id - The ID of the user.
+   */
   static clearCart(user_id) {
     const user = User.users.find((user) => user.id === parseInt(user_id));
     user.cart = [];
   }
 
+  /**
+   * Adds a purchase to the user's purchase history.
+   * @param {Object} purchase - The purchase object to be added.
+   * @param {number} user_id - The ID of the user.
+   */
   static addPurchase(purchase, user_id) {
     const user = User.users.find((user) => user.id === parseInt(user_id));
     user.purchaseHistory.push(purchase);
   }
 
+  /**
+   * Retrieves the purchase history of a user.
+   * @param {number} user_id - The ID of the user.
+   * @returns {Array} - An array containing the purchase history of the user.
+   */
   static getPurchaseHistory(user_id) {
     const user = User.users.find((user) => user.id === parseInt(user_id));
     return user.purchaseHistory;
   }
 
-  // Authentication method
+  /**
+   * Authenticates a user by checking if the provided username and password match any existing user.
+   * @param {string} username - The username to authenticate.
+   * @param {string} password - The password to authenticate.
+   * @returns {User|null} - The authenticated user object if the username and password match, or null if no match is found.
+   */
   static authenticate(username, password) {
     const user = User.users.find(user => user.username === username && user.password === password);
     return user ? user : null;
@@ -58,6 +89,9 @@ class User {
   ];
 }
 
+/**
+ * Represents a product in the online shop.
+ */
 class Product {
   constructor(id, name, description, price, quantity, imageUrl) {
       this.id = id;
@@ -129,7 +163,17 @@ class Product {
 
 }
 
+/**
+ * Represents a purchase made by a user.
+ */
 class Purchase {
+  /**
+   * Creates a new instance of the Purchase class.
+   * @param {number} id - The unique identifier for the purchase.
+   * @param {number} userId - The ID of the user who made the purchase.
+   * @param {Array} products - The array of products included in the purchase.
+   * @param {number} totalAmount - The total amount of the purchase.
+   */
   constructor(id, userId, products, totalAmount) {
     this.id = id;
     this.userId = userId;
@@ -138,7 +182,7 @@ class Purchase {
     this.date = new Date();
   }
 
-  static purchases = []
+  static purchases = [];
 }
 
 module.exports = {

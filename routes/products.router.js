@@ -1,4 +1,7 @@
-// products.router.js is used to define the routes for the products API
+/**
+ * @file products.router.js is used to define the routes for the products API.
+ * @module products.router
+ */
 
 const express = require('express');
 const multer = require('multer');
@@ -7,7 +10,11 @@ const router = express.Router();
 const isAuth = require('../middleware/is-auth');
 const { Product, User, Purchase } = require('../model/models');
 
-// Multer configuration to upload files
+/**
+ * Multer disk storage configuration.
+ *
+ * @type {multer.diskStorage}
+ */
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
       cb(null, 'public/uploads/');
@@ -18,7 +25,16 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// Route admin panel (only for admin users)
+/**
+ * Route for the admin panel (only for admin users).
+ *
+ * @name GET /admin
+ * @function
+ * @memberof module:products.router
+ * @inner
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ */
 router.get('/admin', isAuth, (req, res) => {
   if (req.session.user.role !== 'admin') {
       return res.status(403).send('Acceso denegado');
@@ -26,7 +42,16 @@ router.get('/admin', isAuth, (req, res) => {
   res.render('admin', { bodyClass: 'admin' });
 });
 
-// Route to add a new product (only for admin users)
+/**
+ * Route to add a new product (only for admin users).
+ *
+ * @name POST /admin/add
+ * @function
+ * @memberof module:products.router
+ * @inner
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ */
 router.post('/admin/add', isAuth, upload.single('image'), (req, res) => {
   if (req.session.user.role !== 'admin') {
       return res.status(403).send('Acceso denegado');
@@ -34,22 +59,60 @@ router.post('/admin/add', isAuth, upload.single('image'), (req, res) => {
 
   const { name, description, price, quantity } = req.body;
   const imageUrl = `/uploads/${req.file.filename}`;
+
+  /**
+   * Represents a new product.
+   * @typedef {Object} NewProduct
+   * @property {number} id - The unique identifier of the product.
+   * @property {string} name - The name of the product.
+   * @property {string} description - The description of the product.
+   * @property {number} price - The price of the product.
+   * @property {number} quantity - The quantity of the product.
+   * @property {string} imageUrl - The URL of the product image.
+   */
   const newProduct = new Product(Product.products.length + 1, name, description, price, quantity, imageUrl);
   Product.products.push(newProduct);
   res.redirect('/products');
 });
 
-// Route to get all products
+/**
+ * Route to get all products.
+ *
+ * @name GET /
+ * @function
+ * @memberof module:products.router
+ * @inner
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ */
 router.get('', isAuth, (req, res) => {
   res.render('products', { "products": Product.products, admin: req.session.user.role === 'admin', bodyClass: 'products' });
 });
 
-// Route to get a json with all products
+/**
+ * Route to get a JSON with all products.
+ *
+ * @name GET /api/get
+ * @function
+ * @memberof module:products.router
+ * @inner
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ */
 router.get('/api/get', (req, res) => {
   res.json(Product.products);
 });
 
-// Route to add a product to the cart
+/**
+ * Route to add a product to the cart.
+ *
+ * @name POST /api/cart/add
+ * @function
+ * @memberof module:products.router
+ * @inner
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ */
 router.post('/api/cart/add', (req, res) => {
   try {
     const { id, quantity } = req.body;
@@ -75,7 +138,16 @@ router.post('/api/cart/add', (req, res) => {
   }
 });
 
-// Route to get all products in the cart
+/**
+ * Route to get all products in the cart.
+ *
+ * @name GET /api/cart
+ * @function
+ * @memberof module:products.router
+ * @inner
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ */
 router.get('/api/cart', (req, res) => {
   try {
     const user_id = req.headers['authorization'];
@@ -92,6 +164,16 @@ router.get('/api/cart', (req, res) => {
   }
 });
 
+/**
+ * Route to buy products in the cart.
+ *
+ * @name POST /buy
+ * @function
+ * @memberof module:products.router
+ * @inner
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ */
 router.post('/buy', (req, res) => {
   try {
     const user_id = req.headers['authorization'];
@@ -122,7 +204,16 @@ router.post('/buy', (req, res) => {
   }
 });
 
-// Route to view purchase history
+/**
+ * Route to view purchase history.
+ *
+ * @name GET /history
+ * @function
+ * @memberof module:products.router
+ * @inner
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ */
 router.get('/history', isAuth, (req, res) => {
   const user_id = req.session.user.id;
   const purchaseHistory = User.getPurchaseHistory(user_id);
@@ -133,6 +224,16 @@ router.get('/history', isAuth, (req, res) => {
   res.render('history', { purchaseHistory, bodyClass: 'history' });
 });
 
+/**
+ * Route to get purchase history in JSON format.
+ *
+ * @name GET /api/history
+ * @function
+ * @memberof module:products.router
+ * @inner
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ */
 router.get('api/history', isAuth, (req, res) => {
   const user_id = req.session.user.id;
   const purchaseHistory = User.getPurchaseHistory(user_id);

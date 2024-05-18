@@ -173,13 +173,15 @@ class Purchase {
    * @param {number} userId - The ID of the user who made the purchase.
    * @param {Array} products - The array of products included in the purchase.
    * @param {number} totalAmount - The total amount of the purchase.
+   * @param {string} qrCode - The QR code for the purchase.
    */
-  constructor(id, userId, products, totalAmount) {
+  constructor(id, userId, products, totalAmount, qrCode) {
     this.id = id;
     this.userId = userId;
     this.products = products;
     this.totalAmount = totalAmount;
     this.date = new Date();
+    this.qrCode = qrCode;
   }
 
   static purchases = [];

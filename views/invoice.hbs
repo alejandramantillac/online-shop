@@ -7,35 +7,41 @@
 <body>
   <div class="invoice-container">
     <h2>Factura</h2>
-    <p><strong>ID Compra:</strong> {{purchase.id}}</p>
-    <p><strong>Fecha:</strong> {{purchase.date}}</p>
-    <p><strong>Nombre cliente:</strong> {{user.username}} </p>
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Producto</th>
-          <th>Cantidad</th>
-          <th>Precio</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{#each purchase.products}}
-        <tr>
-          <td>{{this.product.id}}</td>
-          <td>{{this.product.name}}</td>
-          <td>{{this.quantity}}</td>
-          <td>${{this.product.price}}</td>
-        </tr>
-        {{/each}}
-      </tbody>
-    </table>
-    <h3>Total: ${{purchase.totalAmount}}</h3>
-    <div class="button-container">
-      <button style = "background-color: #5cc65c" onclick="window.print()">Imprimir Factura</button>
-      <button class="button-secondary mr-2" onclick="window.location.href='/products'">Volver a Productos</button>
+    <div class="invoice-content">
+      <div class="invoice-details">
+        <p><strong>ID Compra:</strong> {{purchase.id}}</p>
+        <p><strong>Fecha:</strong> {{purchase.date}}</p>
+        <p><strong>Nombre cliente:</strong> {{user.username}} </p>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Producto</th>
+              <th>Cantidad</th>
+              <th>Precio</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each purchase.products}}
+            <tr>
+              <td>{{this.product.id}}</td>
+              <td>{{this.product.name}}</td>
+              <td>{{this.quantity}}</td>
+              <td>${{this.product.price}}</td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+        <h3>Total: ${{purchase.totalAmount}}</h3>
+        <div class="button-container">
+          <button style = "background-color: #5cc65c" onclick="window.print()">Imprimir Factura</button>
+          <button class="button-secondary mr-2" onclick="window.location.href='/products'">Volver a Productos</button>
+        </div>
+      </div>
+      <div class="invoice-qr">
+        <img src="{{purchase.qrCode}}" alt="Código QR">
+      </div>
     </div>
   </div>
-
 </body>
 </html>

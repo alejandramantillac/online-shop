@@ -9,6 +9,7 @@ const path = require('path');
 const router = express.Router();
 const isAuth = require('../middleware/is-auth');
 const { Product, User, Purchase } = require('../model/models');
+const QRCode = require('qrcode');
 
 /**
  * Multer disk storage configuration.
@@ -174,7 +175,7 @@ router.get('/api/cart', (req, res) => {
  * @param {Object} req - The HTTP request object.
  * @param {Object} res - The HTTP response object.
  */
-router.post('/buy', (req, res) => {
+router.post('/buy', async (req, res) => {
   try {
     const user_id = req.headers['authorization'];
     const user = User.users.find(user => user.id === parseInt(user_id));
@@ -188,7 +189,14 @@ router.post('/buy', (req, res) => {
     }
 
     const totalAmount = user.cart.reduce((total, item) => total + (item.product.price * item.quantity), 0);
-    const purchase = new Purchase(Purchase.purchases.length + 1, user.id, user.cart, totalAmount);
+    const purchaseId = Purchase.purchases.length + 1;
+    const purchase = new Purchase(purchaseId, user.id, user.cart, totalAmount);
+
+    // Generate qr code with relevant information
+    const qrCodeData = `Purchase ID: ${purchase.id}\nClient: ${user.username}\nTotal Amount: $${totalAmount}`;
+    const qrCode = await QRCode.toDataURL(qrCodeData);
+
+    purchase.qrCode = qrCode;
 
     user.cart.forEach(item => {
       const product = Product.products.find(p => p.id === item.product.id);

@@ -64,7 +64,7 @@ function checkout() {
 }
 
 function loadCart() {
-  fetch('/products/api/cart/get',{
+  fetch('/products/api/cart',{
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -85,6 +85,11 @@ function loadCart() {
       });
       cartTotal.textContent = total.toFixed(2);
     });
+}
+
+// Function to navigate to purchase history page
+function viewPurchaseHistory() {
+  window.location.href = '/products/history';
 }
 
 function logout(){

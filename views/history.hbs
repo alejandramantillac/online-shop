@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Historial de Compras</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <h1>Historial de Compras</h1>
+  <div class="history-container">
+    {{#each purchaseHistory}}
+      <div class="purchase">
+        <h2>Compra #{{this.id}} - {{this.date}}</h2>
+        <ul>
+          {{#each this.products}}
+            <li>{{this.product.name}} x {{this.quantity}} - ${{this.product.price}}</li>
+          {{/each}}
+        </ul>
+        <p>Total: ${{this.totalAmount}}</p>
+      </div>
+    {{/each}}
+  </div>
+  <div class="button-container">
+    <button class="button-secondary" onclick="window.location.href='/products'">Volver a Productos</button>
+  </div>
+</body>
+</html>

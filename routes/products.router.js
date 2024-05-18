@@ -55,12 +55,17 @@ router.post('/api/cart/add', (req, res) => {
     const { id, quantity } = req.body;
     const user_id = req.headers['authorization'];
     const product = Product.products.find(product => product.id === parseInt(id));
+
     if (!product) {
       return res.status(404).send('Product not found');
     }
 
     if (product.quantity < quantity) {
       return res.status(400).send('Not enough stock');
+    }
+    var user = User.users.find(user => user.id === parseInt(user_id));
+    if (user && user.role === 'admin') {
+      return res.status(403).send('Admin users cannot add products to the cart');
     }
 
     const cart = User.addToCart(product, quantity, user_id);
@@ -71,12 +76,15 @@ router.post('/api/cart/add', (req, res) => {
 });
 
 // Route to get all products in the cart
-router.get('/api/cart/get', (req, res) => {
+router.get('/api/cart', (req, res) => {
   try {
     const user_id = req.headers['authorization'];
     const user = User.users.find(user => user.id === parseInt(user_id));
     if (!user) {
       return res.status(404).send('User not found');
+    }
+    if(user.role === 'admin') {
+      return res.status(403).send('Admin users cannot add products to the cart');
     }
     res.json(user.cart);
   } catch (error) {
@@ -91,6 +99,10 @@ router.post('/buy', (req, res) => {
 
     if (!user) {
       return res.status(404).send('User not found');
+    }
+
+    if (user.role === 'admin') {
+      return res.status(403).send('Admin users cannot buy products');
     }
 
     const totalAmount = user.cart.reduce((total, item) => total + (item.product.price * item.quantity), 0);
@@ -110,8 +122,21 @@ router.post('/buy', (req, res) => {
   }
 });
 
-router.get('/history', (req, res) => {
-  res.send('History Success!');
+// Route to view purchase history
+router.get('/history', isAuth, (req, res) => {
+  const user_id = req.session.user.id;
+  const purchaseHistory = User.getPurchaseHistory(user_id);
+  var user = User.users.find(user => user.id === parseInt(user_id));
+  if (user && user.role === 'admin') {
+    return res.redirect('/products/admin');
+  }
+  res.render('history', { purchaseHistory });
+});
+
+router.get('api/history', isAuth, (req, res) => {
+  const user_id = req.session.user.id;
+  const purchaseHistory = User.getPurchaseHistory(user_id);
+  res.json(purchaseHistory);
 });
 
 module.exports = router;

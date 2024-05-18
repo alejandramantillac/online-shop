@@ -1,14 +1,16 @@
-<div class="products-container">
-    <div class="row">
-      <h2>Productos Disponibles</h2>
-      <!---Validar si el usuario tiene rol "admin"---->
+  <div class="products-container">
       <div class="row">
-        {{#if admin}}
-        <button class="button-secondary mr-2" onclick="window.location='/products/admin'">Agregar Producto</button>
-        {{/if}}
-        <button class="button-alert" onclick="logout()">Cerrar sesión</button>
+          <h2>Productos Disponibles</h2>
+        <div class="row">
+          {{#if admin}}
+            <button class="button-secondary mr-2" onclick="window.location='/products/admin'">Agregar Producto</button>
+          {{/if}}
+          {{#unless admin}}
+            <button class="button-secondary mr-2" onclick="window.location='/products/history'">Ver Historial</button>
+          {{/unless}}
+            <button class="button-alert" onclick="logout()">Cerrar sesión</button>
+        </div>
       </div>
-    </div>
     <div class="products-list">
         {{#each products}}
         <div class="product-card">
@@ -18,13 +20,16 @@
                 <p>{{this.description}}</p>
                 <p>Precio: ${{this.price}}</p>
                 <p>Cantidad Disponible: {{this.quantity}}</p>
+                {{#unless admin}}
                 <button class="add-to-cart" onclick="addToCart({{this.id}})">
                     <i class="fas fa-shopping-cart"></i>
                 </button>
+                {{/unless}}
             </div>
         </div>
         {{/each}}
-    </div>
+  </div>
+  {{#unless admin}}
     <div class="cart">
       <button class="cart-button" onclick="toggleCart()">
         <i class="fas fa-shopping-cart"></i>
@@ -38,5 +43,6 @@
         <button class="checkout-button" onclick="checkout()">Pagar</button>
       </div>
     </div>
+    {{/unless}}
 </div>
 <script src="/js/products.js"></script>

@@ -34,6 +34,7 @@ router.post('/login', (req, res) => {
     req.session.isLoggedIn = true;
     req.session.user = user;
 
+    res.cookie('user_id', req.session.user.id);
     return res.redirect('/products');
 });
 

@@ -31,7 +31,11 @@
       </tbody>
     </table>
     <h3>Total: ${{purchase.totalAmount}}</h3>
-    <button onclick="window.print()">Imprimir Factura</button>
+    <div class="button-container">
+      <button style = "background-color: #5cc65c" onclick="window.print()">Imprimir Factura</button>
+      <button class="button-secondary mr-2" onclick="window.location.href='/products'">Volver a Productos</button>
+    </div>
   </div>
+
 </body>
 </html>

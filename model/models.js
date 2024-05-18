@@ -18,6 +18,10 @@ class User {
 
     const productInCart = user.cart.find(item => item.product.id === product.id);
 
+    if (product.quantity < quantity || (productInCart && product.quantity < productInCart.quantity + quantity)) {
+      throw new Error('Not enough stock');
+    }
+
     if (productInCart) {
       productInCart.quantity += quantity;
     } else {

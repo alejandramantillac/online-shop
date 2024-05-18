@@ -17,7 +17,7 @@ router.post('/register', (req, res) => {
 
   const existingUser = User.users.find(user => user.username === username);
   if (existingUser) {
-    return res.status(400).send('El usuario ya existe');
+    return res.status(400).render('register', { bodyClass: 'login', errorMessage: 'El usuario ya existe' });
   }
 
   /**
@@ -56,7 +56,7 @@ router.post('/login', (req, res) => {
    */
   const user = User.authenticate(username, password);
   if (!user) {
-    return res.status(400).send('Usuario o contraseña incorrectos');
+    return res.status(400).render('login', { bodyClass: 'login', errorMessage: 'Usuario o contraseña incorrectos' });
   }
 
   req.session.isLoggedIn = true;

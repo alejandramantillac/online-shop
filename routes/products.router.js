@@ -224,11 +224,20 @@ router.post('/buy', async (req, res) => {
  */
 router.get('/history', isAuth, (req, res) => {
   const user_id = req.session.user.id;
-  const purchaseHistory = User.getPurchaseHistory(user_id);
+  let purchaseHistory = User.getPurchaseHistory(user_id);
   var user = User.users.find(user => user.id === parseInt(user_id));
   if (user && user.role === 'admin') {
     return res.redirect('/products/admin');
   }
+
+  // Add a purchase number to each purchase
+  purchaseHistory = purchaseHistory.map((purchase, index) => {
+    return {
+      ...purchase,
+      number: index + 1
+    };
+  });
+
   res.render('history', { purchaseHistory, bodyClass: 'history' });
 });
 

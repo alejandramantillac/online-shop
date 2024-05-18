@@ -140,4 +140,17 @@
   height: 100%;
 }
 
+.cart-content button {
+  padding: 5px 10px;
+  background-color: #4d99e0;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.cart-content button:hover {
+  background-color: #357dbf;
+}
 

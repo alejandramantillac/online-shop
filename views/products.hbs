@@ -1,48 +1,48 @@
-  <div class="products-container">
-      <div class="row">
-          <h2>Productos Disponibles</h2>
-        <div class="row">
-          {{#if admin}}
-            <button class="button-secondary mr-2" onclick="window.location='/products/admin'">Agregar Producto</button>
-          {{/if}}
-          {{#unless admin}}
-            <button class="button-secondary mr-2" onclick="window.location='/products/history'">Ver Historial</button>
-          {{/unless}}
-            <button class="button-alert" onclick="logout()">Cerrar sesión</button>
-        </div>
-      </div>
-    <div class="products-list">
-        {{#each products}}
-        <div class="product-card">
-            <img src="{{this.imageUrl}}" alt="{{this.name}}">
-            <div class="product-info">
-                <h3>{{this.name}}</h3>
-                <p>{{this.description}}</p>
-                <p>Precio: ${{this.price}}</p>
-                <p>Cantidad Disponible: {{this.quantity}}</p>
-                {{#unless admin}}
-                <button class="add-to-cart" onclick="addToCart({{this.id}})">
-                    <i class="fas fa-shopping-cart"></i>
-                </button>
-                {{/unless}}
-            </div>
-        </div>
-        {{/each}}
+<div class="products-container">
+  <div class="row">
+    <h2>Productos Disponibles</h2>
+    <div class="row">
+      {{#if admin}}
+        <button class="button-secondary mr-2" onclick="window.location='/products/admin'">Agregar Producto</button>
+      {{/if}}
+      {{#unless admin}}
+        <button class="button-secondary mr-2" onclick="window.location='/products/history'">Ver Historial</button>
+      {{/unless}}
+      <button class="button-alert" onclick="logout()">Cerrar sesión</button>
+    </div>
   </div>
-  {{#unless admin}}
-    <div class="cart">
-      <button class="cart-button" onclick="toggleCart()">
-        <i class="fas fa-shopping-cart"></i>
-        <span id="cart-count">0</span>
-      </button>
-      <div class="cart-content" id="cart">
-        <h3>Carrito de Compras</h3>
-        <ul id="cart-list">
-        </ul>
-        <h3>Total: $<span id="cart-total">0.00</span></h3>
-        <button class="checkout-button" onclick="checkout()">Pagar</button>
+  <div class="products-list">
+    {{#each products}}
+    <div class="product-card">
+      <img src="{{this.imageUrl}}" alt="{{this.name}}">
+      <div class="product-info">
+        <h3>{{this.name}}</h3>
+        <p>{{this.description}}</p>
+        <p>Precio: ${{this.price}}</p>
+        <p>Cantidad Disponible: {{this.quantity}}</p>
+        {{#unless admin}}
+        <button class="add-to-cart" onclick="addToCart({{this.id}})">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+        {{/unless}}
       </div>
     </div>
-    {{/unless}}
+    {{/each}}
+  </div>
+{{#unless admin}}
+  <div class="cart">
+    <button class="cart-button" onclick="toggleCart()">
+      <i class="fas fa-shopping-cart"></i>
+      <span id="cart-count">0</span>
+    </button>
+    <div class="cart-content" id="cart">
+      <h3>Carrito de Compras</h3>
+      <ul id="cart-list">
+      </ul>
+      <h3>Total: $<span id="cart-total">0.00</span></h3>
+      <button class="checkout-button" onclick="checkout()">Pagar</button>
+    </div>
+  </div>
+{{/unless}}
 </div>
 <script src="/js/products.js"></script>

@@ -30,6 +30,13 @@ app.use(express.static(path.join(__dirname, "public")));
 // Set the directory for uploaded images
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
+// Register a Handlebars helper
+const Handlebars = require('handlebars');
+
+Handlebars.registerHelper('toFixed', function(value, decimals) {
+  return value.toFixed(decimals);
+});
+
 routerApi(app);
 
 app.use(logErrors);

@@ -166,6 +166,46 @@ router.get('/api/cart', (req, res) => {
 });
 
 /**
+ * Route to remove products in the cart.
+ *
+ * @name GET /api/cart/remove
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ */
+router.post('/api/cart/remove', (req, res) => {
+  try {
+    const { id, quantity } = req.body;
+    const user_id = req.headers['authorization'];
+    const product = Product.products.find(product => product.id === parseInt(id));
+
+    if (!product) {
+      return res.status(404).send('Product not found');
+    }
+
+    var user = User.users.find(user => user.id === parseInt(user_id));
+    if (user && user.role === 'admin') {
+      return res.status(403).send('Admin users cannot modify the cart');
+    }
+
+    const productInCart = user.cart.find(item => item.product.id === parseInt(id));
+
+    if (!productInCart || productInCart.quantity < quantity) {
+      return res.status(400).send('Not enough items in the cart');
+    }
+
+    if (productInCart.quantity === quantity) {
+      user.cart = user.cart.filter(item => item.product.id !== parseInt(id));
+    } else {
+      productInCart.quantity -= quantity;
+    }
+
+    res.json(user.cart);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+/**
  * Route to buy products in the cart.
  *
  * @name POST /buy

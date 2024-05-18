@@ -31,23 +31,21 @@ function addToCart(id, quantity = 1) {
     });
 }
 
-/*
-functions for this html:
-<div class="cart">
-        <button class="cart-button" onclick="toggleCart()">
-          <i class="fas fa-shopping-cart"></i>
-          <span id="cart-count">0</span>
-        </button>
-        <div class="cart-content">
-          <h3>Carrito de Compras</h3>
-          <ul id="cart-list">
-          </ul>
-          <h3>Total: $<span id="cart-total">0.00</span></h3>
-          <button class="checkout-button" onclick="checkout()">Pagar</button>
-        </div>
-      </div>
-
-*/
+function removeFromCart(id, quantity = 1) {
+  fetch('/products/api/cart/remove', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': getCookie('user_id'),
+    },
+    body: JSON.stringify({ id: id, quantity }),
+  })
+    .then((res) => res.json())
+    .then((cart) => {
+      document.getElementById('cart-count').textContent = cart.length;
+      loadCart();
+    });
+}
 
 /**
  * Toggles the visibility of the cart content and loads the cart if it's displayed.
@@ -85,11 +83,11 @@ function checkout() {
  * Updates the cart list and total on the page.
  */
 function loadCart() {
-  fetch('/products/api/cart',{
+  fetch('/products/api/cart', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization':  getCookie('user_id')
+      'Authorization': getCookie('user_id')
     }
   })
     .then(res => res.json())
@@ -100,7 +98,11 @@ function loadCart() {
       cartList.innerHTML = '';
       products.forEach(product => {
         const li = document.createElement('li');
-        li.textContent = `${product.product.name} x ${product.quantity}`;
+        li.innerHTML = `
+          ${product.product.name} x ${product.quantity}
+          <button onclick="addToCart(${product.product.id})">+</button>
+          <button onclick="removeFromCart(${product.product.id})">-</button>
+        `;
         cartList.appendChild(li);
         total += product.product.price * product.quantity;
       });

@@ -44,12 +44,12 @@ router.get('/login', (req, res) => {
         res.cookie('user_id', req.session.user.id);
         res.redirect('/products');
     }
-    res.render('login');
+    res.render('login', { bodyClass: 'login' });
 });
 
 // Route to get the register form
 router.get('/register', (req, res) => {
-    res.render('register');
+    res.render('register', { bodyClass: 'login' });
 });
 
 // Route to logout

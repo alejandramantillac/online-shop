@@ -23,7 +23,7 @@ router.get('/admin', isAuth, (req, res) => {
   if (req.session.user.role !== 'admin') {
       return res.status(403).send('Acceso denegado');
   }
-  res.render('admin');
+  res.render('admin', { bodyClass: 'admin' });
 });
 
 // Route to add a new product (only for admin users)
@@ -41,7 +41,7 @@ router.post('/admin/add', isAuth, upload.single('image'), (req, res) => {
 
 // Route to get all products
 router.get('', isAuth, (req, res) => {
-  res.render('products', { "products": Product.products, admin: req.session.user.role === 'admin' });
+  res.render('products', { "products": Product.products, admin: req.session.user.role === 'admin', bodyClass: 'products' });
 });
 
 // Route to get a json with all products
@@ -116,7 +116,7 @@ router.post('/buy', (req, res) => {
     User.addPurchase(purchase, user_id);
     User.clearCart(user_id);
 
-    res.render('invoice', { purchase, user });
+    res.render('invoice', { purchase, user, bodyClass: 'invoice' });
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -130,7 +130,7 @@ router.get('/history', isAuth, (req, res) => {
   if (user && user.role === 'admin') {
     return res.redirect('/products/admin');
   }
-  res.render('history', { purchaseHistory });
+  res.render('history', { purchaseHistory, bodyClass: 'history' });
 });
 
 router.get('api/history', isAuth, (req, res) => {

@@ -1,0 +1,52 @@
+/* History Page */
+.history-container {
+  max-width: 800px;
+  margin: 20px auto;
+  background-color: var(--white);
+  box-shadow: var(--box-shadow);
+  border-radius: var(--border-radius);
+  padding: 20px;
+}
+
+.history-container .purchase {
+  margin-bottom: 20px;
+  padding: 20px;
+  border-bottom: 1px solid var(--background-color);
+}
+
+.history-container .purchase h2 {
+  color: var(--primary-color);
+  margin-top: 0;
+}
+
+.history-container .purchase ul {
+  list-style: none;
+  padding: 0;
+}
+
+.history-container .purchase li {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.history-container .purchase p {
+  text-align: right;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.history-container button {
+  padding: 10px 20px;
+  background-color: var(--secondary-color);
+  color: var(--white);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.history-container button:hover {
+  background-color: #4d99e0;
+}

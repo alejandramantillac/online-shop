@@ -4,6 +4,7 @@
 * Maria Alejandra Mantilla Coral
 * Andrés David Parra García
 * Silem Nabib Villa Contreras
+* Gerson De Jesús Hurtado Borja
 
 ## Descripción del Proyecto
 
@@ -23,6 +24,16 @@ Este proyecto consiste en el desarrollo de una tienda en línea para una empresa
   - Agregar productos al carrito.
   - Realizar compras.
   - Ver historial de compras.
+
+### Usuarios Preexistentes en el Sistema
+
+- **Administrador:** 
+  - Usuario: `admin`
+  - Contraseña: `admin`
+
+- **Cliente:** 
+  - Usuario: `user`
+  - Contraseña: `user`
 
 ## Tecnologías Utilizadas
 
@@ -62,7 +73,7 @@ Este proyecto consiste en el desarrollo de una tienda en línea para una empresa
     npm start
     ```
 
-2. Abre tu navegador web y navega a `http://localhost/users/login`.
+2. Abre tu navegador web y navega a `http://localhost/users/login`, podrás ingresar con las credenciales predefenidas (admin o user), o crear un nuevo usuario.
 
 ### Estructura del Proyecto
 

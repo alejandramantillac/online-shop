@@ -94,3 +94,148 @@ Este proyecto consiste en el desarrollo de una tienda en línea para una empresa
 - **Agregar Productos:** Los administradores pueden agregar nuevos productos al inventario de la tienda.
 - **Gestión de Productos:** Los administradores pueden ver todos los productos y agregar más stock.
 
+## Endpoints de la API
+
+### Endpoints de Productos
+
+#### Obtener todos los productos
+
+- *URL:* /products/api/get
+- *Método:* GET
+- *Descripción:* Obtiene la lista de todos los productos disponibles.
+- *Respuesta exitosa:*
+  - *Código:* 200
+  - *Contenido:* JSON con la lista de productos.
+  - *Ejemplo de respuesta:*
+    json
+    [
+      {
+        "id": 1,
+        "name": "Producto 1",
+        "description": "Descripción del producto 1",
+        "price": 100,
+        "quantity": 10,
+        "imageUrl": "/uploads/image1.jpg"
+      },
+      ...
+    ]
+    
+
+#### Agregar un nuevo producto (Solo Admin)
+
+- *URL:* /products/admin/add
+- *Método:* POST
+- *Descripción:* Permite a un administrador agregar un nuevo producto al inventario.
+- *Autenticación:* Requiere autenticación y rol de administrador.
+- *Parámetros del formulario:*
+  - name: Nombre del producto.
+  - description: Descripción del producto.
+  - price: Precio del producto.
+  - quantity: Cantidad en inventario.
+  - image: Archivo de imagen del producto.
+- *Respuesta exitosa:*
+  - *Código:* 302 (Redirecciona a /products)
+
+#### Agregar producto al carrito
+
+- *URL:* /products/api/cart/add
+- *Método:* POST
+- *Descripción:* Permite a un cliente agregar un producto a su carrito.
+- *Autenticación:* Requiere autenticación.
+- *Parámetros del cuerpo:*
+  - id: ID del producto.
+  - quantity: Cantidad a agregar.
+- *Encabezados:*
+  - authorization: ID del usuario.
+- *Respuesta exitosa:*
+  - *Código:* 200
+  - *Contenido:* JSON con el carrito actualizado.
+  - *Ejemplo de respuesta:*
+    json
+    {
+      "cart": [
+        {
+          "product": {
+            "id": 1,
+            "name": "Producto 1",
+            "price": 100,
+            "quantity": 2
+          }
+        },
+        ...
+      ]
+    }
+    
+
+#### Ver productos en el carrito
+
+- *URL:* /products/api/cart
+- *Método:* GET
+- *Descripción:* Obtiene los productos en el carrito del usuario.
+- *Autenticación:* Requiere autenticación.
+- *Encabezados:*
+  - authorization: ID del usuario.
+- *Respuesta exitosa:*
+  - *Código:* 200
+  - *Contenido:* JSON con el carrito.
+  - *Ejemplo de respuesta:*
+    json
+    {
+      "cart": [
+        {
+          "product": {
+            "id": 1,
+            "name": "Producto 1",
+            "price": 100,
+            "quantity": 2
+          }
+        },
+        ...
+      ]
+    }
+    
+
+#### Comprar productos en el carrito
+
+- *URL:* /products/buy
+- *Método:* POST
+- *Descripción:* Permite a un cliente comprar los productos en su carrito.
+- *Autenticación:* Requiere autenticación.
+- *Encabezados:*
+  - authorization: ID del usuario.
+- *Respuesta exitosa:*
+  - *Código:* 200
+  - *Contenido:* Renderiza la página de factura con la compra realizada.
+
+### Endpoints de Usuarios
+
+#### Registro de usuarios
+
+- *URL:* /users/register
+- *Método:* POST
+- *Descripción:* Permite a un nuevo usuario registrarse.
+- *Parámetros del cuerpo:*
+  - username: Nombre de usuario.
+  - password: Contraseña.
+- *Respuesta exitosa:*
+  - *Código:* 302 (Redirecciona a /products)
+
+#### Inicio de sesión
+
+- *URL:* /users/login
+- *Método:* POST
+- *Descripción:* Permite a un usuario iniciar sesión.
+- *Parámetros del cuerpo:*
+  - username: Nombre de usuario.
+  - password: Contraseña.
+- *Respuesta exitosa:*
+  - *Código:* 302 (Redirecciona a /products)
+
+#### Cierre de sesión
+
+- *URL:* /users/logout
+- *Método:* POST
+- *Descripción:* Permite a un usuario cerrar sesión.
+- *Respuesta exitosa:*
+  - *Código:* 302 (Redirecciona a /login)
+

@@ -132,14 +132,6 @@
   object-fit: cover;
 }
 
-.invoice-qr {
-  margin-top: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-}
-
 .cart-content button {
   padding: 5px 10px;
   background-color: #4d99e0;

@@ -73,7 +73,7 @@ router.post('/admin/add', isAuth, upload.single('image'), (req, res) => {
    */
   const newProduct = new Product(Product.products.length + 1, name, description, price, quantity, imageUrl);
   Product.products.push(newProduct);
-  res.redirect('/products');
+  return res.redirect('/products');
 });
 
 /**
@@ -87,7 +87,7 @@ router.post('/admin/add', isAuth, upload.single('image'), (req, res) => {
  * @param {Object} res - The HTTP response object.
  */
 router.get('', isAuth, (req, res) => {
-  res.render('products', { "products": Product.products, admin: req.session.user.role === 'admin', bodyClass: 'products' });
+  return res.render('products', { "products": Product.products, admin: req.session.user.role === 'admin', bodyClass: 'products' });
 });
 
 /**
@@ -100,8 +100,8 @@ router.get('', isAuth, (req, res) => {
  * @param {Object} req - The HTTP request object.
  * @param {Object} res - The HTTP response object.
  */
-router.get('/api/get', (req, res) => {
-  res.json(Product.products);
+router.get('/api', (req, res) => {
+  return res.json(Product.products);
 });
 
 /**
@@ -127,15 +127,15 @@ router.post('/api/cart/add', (req, res) => {
     if (product.quantity < quantity) {
       return res.status(400).send('Not enough stock');
     }
-    var user = User.users.find(user => user.id === parseInt(user_id));
+    var user = User.users.find(user => user.id === user_id);
     if (user && user.role === 'admin') {
       return res.status(403).send('Admin users cannot add products to the cart');
     }
 
     const cart = User.addToCart(product, quantity, user_id);
-    res.json(cart);
+    return res.json(cart);
   } catch (error) {
-    res.status(500).send(error.message);
+    return res.status(500).send(error.message);
   }
 });
 
@@ -152,16 +152,16 @@ router.post('/api/cart/add', (req, res) => {
 router.get('/api/cart', (req, res) => {
   try {
     const user_id = req.headers['authorization'];
-    const user = User.users.find(user => user.id === parseInt(user_id));
+    const user = User.users.find(user => user.id === user_id);
     if (!user) {
       return res.status(404).send('User not found');
     }
     if(user.role === 'admin') {
       return res.status(403).send('Admin users cannot add products to the cart');
     }
-    res.json(user.cart);
+    return res.json(user.cart);
   } catch (error) {
-    res.status(500).send(error.message);
+    return res.status(500).send(error.message);
   }
 });
 
@@ -182,7 +182,7 @@ router.post('/api/cart/remove', (req, res) => {
       return res.status(404).send('Product not found');
     }
 
-    var user = User.users.find(user => user.id === parseInt(user_id));
+    var user = User.users.find(user => user.id === user_id);
     if (user && user.role === 'admin') {
       return res.status(403).send('Admin users cannot modify the cart');
     }
@@ -199,9 +199,9 @@ router.post('/api/cart/remove', (req, res) => {
       productInCart.quantity -= quantity;
     }
 
-    res.json(user.cart);
+    return res.json(user.cart);
   } catch (error) {
-    res.status(500).send(error.message);
+    return res.status(500).send(error.message);
   }
 });
 
@@ -215,10 +215,10 @@ router.post('/api/cart/remove', (req, res) => {
  * @param {Object} req - The HTTP request object.
  * @param {Object} res - The HTTP response object.
  */
-router.post('/buy', async (req, res) => {
+router.post('/api/buy', async (req, res) => {
   try {
     const user_id = req.headers['authorization'];
-    const user = User.users.find(user => user.id === parseInt(user_id));
+    const user = User.users.find(user => user.id === user_id);
 
     if (!user) {
       return res.status(404).send('User not found');
@@ -246,11 +246,57 @@ router.post('/buy', async (req, res) => {
     User.addPurchase(purchase, user_id);
     User.clearCart(user_id);
 
-    res.render('invoice', { purchase, user, bodyClass: 'invoice' });
+    return res.json(purchase);
   } catch (error) {
-    res.status(500).send(error.message);
+    return res.status(500).send(error.message);
   }
 });
+
+/**
+ * Route to view an invoice.
+ *
+ * @name GET /invoice/:id
+ * @function
+ * @memberof module:products.router
+ * @inner
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ */
+router.get('/invoice/:id', isAuth, (req, res) => {
+  const user_id = req.session.user.id;
+  const purchaseId = parseInt(req.params.id);
+  const purchase = User.getPurchaseHistory(user_id).find(purchase => purchase.id === purchaseId);
+  if (!purchase) {
+    return res.status(404).send('Purchase not found');
+  }
+  return res.render('invoice', { purchase, user: req.session.user, bodyClass: 'invoice' });
+});
+
+router.get('/api/invoice/:id', (req, res) => {
+  const user_id = req.headers['authorization'];
+  const purchaseId = parseInt(req.params.id);
+  const user = User.users.find((user) => user.id === user_id);
+
+  if (!user) {
+    return res.status(404).send('User not found');
+  }
+
+  if (user.role === 'admin') {
+    return res.status(403).send('Admin users cannot buy products');
+  }
+
+  if (user && user.role === 'admin') {
+    return res.status(403).send('Admin users cannot view purchase history');
+  }
+
+  const purchase = User.getPurchaseHistory(user_id).find(purchase => purchase.id === purchaseId);
+
+  if (!purchase) {
+    return res.status(404).send('Purchase not found');
+  }
+  return res.json(purchase);
+});
+
 
 /**
  * Route to view purchase history.
@@ -265,7 +311,7 @@ router.post('/buy', async (req, res) => {
 router.get('/history', isAuth, (req, res) => {
   const user_id = req.session.user.id;
   let purchaseHistory = User.getPurchaseHistory(user_id);
-  var user = User.users.find(user => user.id === parseInt(user_id));
+  var user = User.users.find(user => user.id === user_id);
   if (user && user.role === 'admin') {
     return res.redirect('/products/admin');
   }
@@ -278,7 +324,7 @@ router.get('/history', isAuth, (req, res) => {
     };
   });
 
-  res.render('history', { purchaseHistory, bodyClass: 'history' });
+  return res.render('history', { purchaseHistory, bodyClass: 'history' });
 });
 
 /**
@@ -291,10 +337,33 @@ router.get('/history', isAuth, (req, res) => {
  * @param {Object} req - The HTTP request object.
  * @param {Object} res - The HTTP response object.
  */
-router.get('api/history', isAuth, (req, res) => {
-  const user_id = req.session.user.id;
-  const purchaseHistory = User.getPurchaseHistory(user_id);
-  res.json(purchaseHistory);
+router.get('/api/history', (req, res) => {
+
+  const user_id = req.headers['authorization'];
+  const user = User.users.find((user) => user.id === user_id);
+
+  if (!user) {
+    return res.status(404).send('User not found');
+  }
+
+  if (user.role === 'admin') {
+    return res.status(403).send('Admin users cannot buy products');
+  }
+
+  let purchaseHistory = User.getPurchaseHistory(user_id);
+  if (user && user.role === 'admin') {
+    return res.status(403).send('Admin users cannot view purchase history');
+  }
+
+  // Add a purchase number to each purchase
+  purchaseHistory = purchaseHistory.map((purchase, index) => {
+    return {
+      ...purchase,
+      number: index + 1
+    };
+  });
+
+  return res.json(purchaseHistory);
 });
 
 module.exports = router;

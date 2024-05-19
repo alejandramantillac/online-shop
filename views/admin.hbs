@@ -1,5 +1,10 @@
 <div class="admin-container">
-    <form class="admin-form" method="post" action="/products/admin/add" enctype="multipart/form-data">
+  <div class="admin-form">
+    <div class="row">
+      <button class="button-back" onclick="window.location='/products'">⬅ Regresar</button>
+      <div></div>
+    </div>
+    <form method="post" action="/products/admin/add" enctype="multipart/form-data">
         <h2>Información del Producto</h2>
         <div class="input-group">
             <i class="fas fa-box"></i>
@@ -23,7 +28,6 @@
         </div>
         <button type="submit">Agregar Producto</button>
     </form>
-    <div class="back-button-container">
-        <button class="button-back" onclick="window.location='/products'">⬅ Regresar</button>
-    </div>
+  </div>
+
 </div>

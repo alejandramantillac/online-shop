@@ -55,3 +55,11 @@
 .invoice-container button:hover {
   background-color: #4d99e0;
 }
+
+.invoice-qr {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}

@@ -9,7 +9,7 @@
   <h1>Historial de Compras</h1>
   <div class="history-container">
     {{#each purchaseHistory}}
-      <div class="purchase">
+      <div class="purchase" onclick="window.location.href='/products/invoice/{{this.number}}'">
         <h2>Compra #{{this.number}} - <span class="purchase-date">{{this.date}}</span></h2>
         <ul>
           {{#each this.products}}

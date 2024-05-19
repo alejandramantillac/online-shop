@@ -14,6 +14,14 @@ class User {
     this.purchaseHistory = [];
   }
 
+  static generateId() {
+    // It must be a 20 random characters long string
+    return (
+      Math.random().toString(36).substring(2, 15) +
+      Math.random().toString(36).substring(2, 15)
+    );
+  }
+
   /**
    * Adds a product to the user's cart.
    * @param {Object} product - The product to be added to the cart.
@@ -23,14 +31,19 @@ class User {
    * @throws {Error} - If the user is not found or there is not enough stock.
    */
   static addToCart(product, quantity = 1, user_id) {
-    const user = User.users.find(user => user.id === parseInt(user_id));
+    const user = User.users.find((user) => user.id === user_id);
     if (!user) {
       throw new Error('User not found');
     }
 
-    const productInCart = user.cart.find(item => item.product.id === product.id);
+    const productInCart = user.cart.find(
+      (item) => item.product.id === product.id,
+    );
 
-    if (product.quantity < quantity || (productInCart && product.quantity < productInCart.quantity + quantity)) {
+    if (
+      product.quantity < quantity ||
+      (productInCart && product.quantity < productInCart.quantity + quantity)
+    ) {
       throw new Error('Not enough stock');
     }
 
@@ -48,7 +61,7 @@ class User {
    * @param {number} user_id - The ID of the user.
    */
   static clearCart(user_id) {
-    const user = User.users.find((user) => user.id === parseInt(user_id));
+    const user = User.users.find((user) => user.id === user_id);
     user.cart = [];
   }
 
@@ -58,7 +71,7 @@ class User {
    * @param {number} user_id - The ID of the user.
    */
   static addPurchase(purchase, user_id) {
-    const user = User.users.find((user) => user.id === parseInt(user_id));
+    const user = User.users.find((user) => user.id === user_id);
     user.purchaseHistory.push(purchase);
   }
 
@@ -68,7 +81,7 @@ class User {
    * @returns {Array} - An array containing the purchase history of the user.
    */
   static getPurchaseHistory(user_id) {
-    const user = User.users.find((user) => user.id === parseInt(user_id));
+    const user = User.users.find((user) => user.id === user_id);
     return user.purchaseHistory;
   }
 
@@ -79,13 +92,15 @@ class User {
    * @returns {User|null} - The authenticated user object if the username and password match, or null if no match is found.
    */
   static authenticate(username, password) {
-    const user = User.users.find(user => user.username === username && user.password === password);
+    const user = User.users.find(
+      (user) => user.username === username && user.password === password,
+    );
     return user ? user : null;
   }
 
   static users = [
-    new User(1, 'admin', 'admin', 'admin'),
-    new User(2, 'user', 'user', 'user'),
+    new User(this.generateId(), 'admin', 'admin', 'admin'),
+    new User(this.generateId(), 'user', 'user', 'user'),
   ];
 }
 

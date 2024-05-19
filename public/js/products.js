@@ -61,20 +61,27 @@ function toggleCart() {
 }
 
 /**
- * Performs the checkout process by sending a POST request to '/products/buy' endpoint
+ * Performs the checkout process by sending a POST request to '/products/api/buy' endpoint
  * and updates the document body with the received invoice HTML.
  */
 function checkout() {
-  fetch('/products/buy', {
+  fetch('/products/api/buy', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': getCookie('user_id'),
     },
   })
-    .then((res) => res.text())
-    .then((invoiceHtml) => {
-      document.body.innerHTML = invoiceHtml;
+    .then((res) => res.json())
+    .then((purchase) => {
+      console.log(purchase);
+      if(purchase['id'] !== undefined) {
+        window.location.href = '/products/invoice/' + purchase['id'];
+        return;
+      }
+      if(purchase['message']) {
+        alert(purchase['message']);
+      }
     });
 }
 
@@ -100,8 +107,8 @@ function loadCart() {
         const li = document.createElement('li');
         li.innerHTML = `
           ${product.product.name} x ${product.quantity}
-          <button onclick="addToCart(${product.product.id})">+</button>
           <button onclick="removeFromCart(${product.product.id})">-</button>
+          <button onclick="addToCart(${product.product.id})">+</button>
         `;
         cartList.appendChild(li);
         total += product.product.price * product.quantity;

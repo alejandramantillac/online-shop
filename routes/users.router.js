@@ -33,7 +33,7 @@ router.post('/register', (req, res) => {
   req.session.user = newUser;
 
   res.cookie('user_id', req.session.user.id);
-  res.redirect('/products');
+  return res.redirect('/products');
 });
 
 /**
@@ -66,6 +66,27 @@ router.post('/login', (req, res) => {
   return res.redirect('/products');
 });
 
+router.post('/api/login', (req, res) => {
+  const { username, password } = req.body;
+
+  /**
+   * Represents a user object.
+   * @typedef {Object} User
+   * @property {string} username - The username of the user.
+   * @property {string} password - The password of the user.
+   * @property {string} email - The email address of the user.
+   */
+  const user = User.authenticate(username, password);
+  if (!user) {
+    return res.status(400).json({ error: 'Usuario o contraseña incorrectos' });
+  }
+
+  req.session.isLoggedIn = true;
+  req.session.user = user;
+
+  res.json({ user });
+});
+
 /**
  * Route to get the login form.
  * @name GET /login
@@ -77,9 +98,9 @@ router.post('/login', (req, res) => {
 router.get('/login', (req, res) => {
   if (req.session.isLoggedIn) {
     res.cookie('user_id', req.session.user.id);
-    res.redirect('/products');
+    return res.redirect('/products');
   }
-  res.render('login', { bodyClass: 'login' });
+  return res.render('login', { bodyClass: 'login' });
 });
 
 /**
@@ -91,7 +112,7 @@ router.get('/login', (req, res) => {
  * @param {Object} res - The response object.
  */
 router.get('/register', (req, res) => {
-  res.render('register', { bodyClass: 'login' });
+  return res.render('register', { bodyClass: 'login' });
 });
 
 /**
@@ -109,7 +130,7 @@ router.post('/logout', (req, res) => {
     }
     res.clearCookie('sid');
     res.clearCookie('user_id');
-    res.redirect('/login');
+    return res.redirect('/login');
   });
 });
 

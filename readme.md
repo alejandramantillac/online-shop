@@ -1,6 +1,7 @@
 # Tienda en Línea - Proyecto Final
 
 ## Integrantes
+
 * Maria Alejandra Mantilla Coral
 * Andrés David Parra García
 * Silem Nabib Villa Contreras
@@ -15,10 +16,11 @@ Este proyecto consiste en el desarrollo de una tienda en línea para una empresa
 ### Roles de Usuario
 
 - **Administrador:**
+
   - Iniciar sesión.
   - Agregar nuevos productos al inventario.
-
 - **Cliente:**
+
   - Registrarse o iniciar sesión.
   - Ver la lista de productos disponibles.
   - Agregar productos al carrito.
@@ -27,11 +29,12 @@ Este proyecto consiste en el desarrollo de una tienda en línea para una empresa
 
 ### Usuarios Preexistentes en el Sistema
 
-- **Administrador:** 
+- **Administrador:**
+
   - Usuario: `admin`
   - Contraseña: `admin`
+- **Cliente:**
 
-- **Cliente:** 
   - Usuario: `user`
   - Contraseña: `user`
 
@@ -52,28 +55,20 @@ Este proyecto consiste en el desarrollo de una tienda en línea para una empresa
 
 ### Instalación
 
-1. Clona el repositorio a tu máquina local:
+Instala las dependencias del proyecto:
 
-    ```bash
-    git clone https://github.com/alejandramantillac/online-shop.git
-    cd online-shop
-    ```
-
-2. Instala las dependencias del proyecto:
-
-    ```bash
-    npm install
-    ```
+```bash
+npm install
+```
 
 ### Ejecución
 
 1. Inicia el servidor:
 
-    ```bash
-    npm start
-    ```
-
-2. Abre tu navegador web y navega a `http://localhost/users/login`, podrás ingresar con las credenciales predefenidas (admin o user), o crear un nuevo usuario.
+   ```bash
+   npm start
+   ```
+2. Abre tu navegador web y navega a `http://localhost` podrás ingresar con las credenciales predefenidas (admin o user), o crear un nuevo usuario.
 
 ### Estructura del Proyecto
 
@@ -96,146 +91,318 @@ Este proyecto consiste en el desarrollo de una tienda en línea para una empresa
 
 ## Endpoints de la API
 
-### Endpoints de Productos
+A continuación se detallan los endpoints disponibles en la API de productos, junto con ejemplos de peticiones.
 
-#### Obtener todos los productos
+    ***Nota:*** **las id's de usuario son autogeneradas, por lo que las id's de los ejemplos solo son para muestra.**
 
-- *URL:* /products/api/get
-- *Método:* GET
-- *Descripción:* Obtiene la lista de todos los productos disponibles.
-- *Respuesta exitosa:*
-  - *Código:* 200
-  - *Contenido:* JSON con la lista de productos.
-  - *Ejemplo de respuesta:*
-    json
-    [
-      {
+#### 1. Obtener productos en formato JSON
+
+**Endpoint:** `GET /products/api`
+
+Este endpoint devuelve un JSON con todos los productos disponibles.
+
+    **URL:**` /products/api`
+    **Método:**` GET`
+    **Autenticación:** No requiere autenticación.
+
+**Ejemplo de petición:**
+
+```http
+GET http://127.0.0.1/products/api HTTP/1.1
+```
+
+**Respuesta:**
+
+```json
+[
+  {
+    "id": 1,
+    "name": "iPhone 14 Pro Max",
+    "description": "El iPhone 14 Pro Max es el buque insignia de Apple con su impresionante chip A16 Bionic, cámara de 48MP y pantalla Super Retina XDR de 6.7\".",
+    "price": 1099,
+    "quantity": 20,
+    "imageUrl": "https://bit.ly/4dM59WE"
+  },
+  ...
+]
+```
+
+---
+
+#### 2. Añadir un producto al carrito
+
+**Endpoint:** `POST /products/api/cart/add`
+
+    **URL:** `/products/api/cart/add`
+    **Método:** `POST`
+    **Autenticación:** Requiere autenticación.
+
+    **Encabezados:**
+        `Authorization: <id_del_usuario>`
+
+    **Cuerpo:**
+        `id=<id_del_producto>`
+        `quantity=<cantidad_a_agregar>`
+
+**Ejemplo de petición:**
+
+```http
+POST http://127.0.0.1/products/api/cart/add HTTP/1.1
+Authorization: sss2beqmkfqo65z6s1yii
+Content-Type: application/x-www-form-urlencoded
+
+id=1&quantity=1
+```
+
+**Respuesta:**
+
+```json
+[
+  {
+    "product": {
+      "id": 1,
+      "name": "iPhone 14 Pro Max",
+      "description": "El iPhone 14 Pro Max es el buque insignia de Apple con su impresionante chip A16 Bionic, cámara de 48MP y pantalla Super Retina XDR de 6.7\".",
+      "price": 1099,
+      "quantity": 18,
+      "imageUrl": "https://bit.ly/4dM59WE"
+    },
+    "quantity": 2
+  },
+  ...
+]
+```
+
+---
+
+#### 3. Obtener productos en el carrito
+
+**Endpoint:** `GET /products/api/cart`
+
+Este endpoint devuelve un JSON con los productos en el carrito del usuario.
+
+    **URL:** `/products/api/cart`
+    **Método:** `GET`
+    **Autenticación:** Requiere autenticación.
+
+    **Encabezados:**
+        `Authorization: <id_del_usuario>`
+
+**Ejemplo de petición:**
+
+```http
+GET http://127.0.0.1/products/api/cart HTTP/1.1
+Authorization: sss2beqmkfqo65z6s1yii
+```
+
+**Respuesta:**
+
+```json
+[
+  {
+    "product": {
+      "id": 1,
+      "name": "iPhone 14 Pro Max",
+      "description": "El iPhone 14 Pro Max es el buque insignia de Apple con su impresionante chip A16 Bionic, cámara de 48MP y pantalla Super Retina XDR de 6.7\".",
+      "price": 1099,
+      "quantity": 18,
+      "imageUrl": "https://bit.ly/4dM59WE"
+    },
+    "quantity": 2
+  },
+  ...
+]
+```
+
+---
+
+#### 4. Eliminar productos del carrito
+
+**Endpoint:** `POST /products/api/cart/remove`
+
+Este endpoint permite a los usuarios eliminar productos de su carrito.
+
+    **URL:** `/products/api/cart/remove`
+    **Método:** `POST`
+    **Autenticación:** Requiere autenticación.
+
+    **Encabezados:**
+        `Authorization: <id_del_usuario>`
+
+    **Cuerpo:**
+        `id=<id_del_producto>`
+        `quantity=<cantidad_a_remover>`
+
+**Ejemplo de petición:**
+
+```http
+POST http://127.0.0.1/products/api/cart/remove HTTP/1.1
+Authorization: sss2beqmkfqo65z6s1yii
+Content-Type: application/x-www-form-urlencoded
+
+id=1&quantity=1
+```
+
+**Respuesta:**
+
+```json
+[
+  {
+    "product": {
+      "id": 1,
+      "name": "iPhone 14 Pro Max",
+      "description": "El iPhone 14 Pro Max es el buque insignia de Apple con su impresionante chip A16 Bionic, cámara de 48MP y pantalla Super Retina XDR de 6.7\".",
+      "price": 1099,
+      "quantity": 19,
+      "imageUrl": "https://bit.ly/4dM59WE"
+    },
+    "quantity": 1
+  },
+  ...
+]
+```
+
+---
+
+#### 5. Comprar productos del carrito
+
+**Endpoint:** `POST /products/api/buy`
+
+Este endpoint permite a los usuarios comprar los productos en su carrito.
+
+    **URL:** `/products/api/buy`
+    **Método:** `POST`
+    **Autenticación:** Requiere autenticación.
+
+    **Encabezados:**
+        `Authorization: <id_del_usuario>`
+
+**Ejemplo de petición:**
+
+```http
+POST http://127.0.0.1/products/api/buy HTTP/1.1
+Authorization: sss2beqmkfqo65z6s1yii
+```
+
+**Respuesta:**
+
+```json
+{
+  "id": 1,
+  "userId": "user_id",
+  "products": [
+    {
+      "product": {
         "id": 1,
-        "name": "Producto 1",
-        "description": "Descripción del producto 1",
-        "price": 100,
-        "quantity": 10,
-        "imageUrl": "/uploads/image1.jpg"
+        "name": "iPhone 14 Pro Max",
+        "description": "El iPhone 14 Pro Max es el buque insignia de Apple con su impresionante chip A16 Bionic, cámara de 48MP y pantalla Super Retina XDR de 6.7\".",
+        "price": 1099,
+        "quantity": 18,
+        "imageUrl": "https://bit.ly/4dM59WE"
       },
-      ...
-    ]
-    
-
-#### Agregar un nuevo producto (Solo Admin)
-
-- *URL:* /products/admin/add
-- *Método:* POST
-- *Descripción:* Permite a un administrador agregar un nuevo producto al inventario.
-- *Autenticación:* Requiere autenticación y rol de administrador.
-- *Parámetros del formulario:*
-  - name: Nombre del producto.
-  - description: Descripción del producto.
-  - price: Precio del producto.
-  - quantity: Cantidad en inventario.
-  - image: Archivo de imagen del producto.
-- *Respuesta exitosa:*
-  - *Código:* 302 (Redirecciona a /products)
-
-#### Agregar producto al carrito
-
-- *URL:* /products/api/cart/add
-- *Método:* POST
-- *Descripción:* Permite a un cliente agregar un producto a su carrito.
-- *Autenticación:* Requiere autenticación.
-- *Parámetros del cuerpo:*
-  - id: ID del producto.
-  - quantity: Cantidad a agregar.
-- *Encabezados:*
-  - authorization: ID del usuario.
-- *Respuesta exitosa:*
-  - *Código:* 200
-  - *Contenido:* JSON con el carrito actualizado.
-  - *Ejemplo de respuesta:*
-    json
-    {
-      "cart": [
-        {
-          "product": {
-            "id": 1,
-            "name": "Producto 1",
-            "price": 100,
-            "quantity": 2
-          }
-        },
-        ...
-      ]
+      "quantity": 2
     }
-    
+  ],
+  "totalAmount": 2198,
+  "date": "2023-05-17T12:34:56.789Z",
+  "qrCode": "data:image/png;base64,....."
+}
+```
 
-#### Ver productos en el carrito
+---
 
-- *URL:* /products/api/cart
-- *Método:* GET
-- *Descripción:* Obtiene los productos en el carrito del usuario.
-- *Autenticación:* Requiere autenticación.
-- *Encabezados:*
-  - authorization: ID del usuario.
-- *Respuesta exitosa:*
-  - *Código:* 200
-  - *Contenido:* JSON con el carrito.
-  - *Ejemplo de respuesta:*
-    json
+#### 6. Ver factura en formato JSON
+
+**Endpoint:** `GET /products/api/invoice/:id`
+
+Este endpoint permite a los usuarios obtener una factura en formato JSON.
+
+    **URL:** `/products/api/invoice/<id_de_factura>`
+    **Método:** `GET`
+    **Autenticación:** Requiere autenticación.
+
+    **Encabezados:**
+        `Authorization: <id_del_usuario>`
+
+**Ejemplo de petición:**
+
+```http
+GET http://127.0.0.1/products/api/invoice/1 HTTP/1.1
+Authorization: sss2beqmkfqo65z6s1yii
+```
+
+**Respuesta:**
+
+```json
+{
+  "id": 1,
+  "userId": "user_id",
+  "products": [
     {
-      "cart": [
-        {
-          "product": {
-            "id": 1,
-            "name": "Producto 1",
-            "price": 100,
-            "quantity": 2
-          }
-        },
-        ...
-      ]
+      "product": {
+        "id": 1,
+        "name": "iPhone 14 Pro Max",
+        "description": "El iPhone 14 Pro Max es el buque insignia de Apple con su impresionante chip A16 Bionic, cámara de 48MP y pantalla Super Retina XDR de 6.7\".",
+        "price": 1099,
+        "quantity": 18,
+        "imageUrl": "https://bit.ly/4dM59WE"
+      },
+      "quantity": 2
     }
-    
+  ],
+  "totalAmount": 2198,
+  "date": "2023-05-17T12:34:56.789Z",
+  "qrCode": "data:image/png;base64,....."
+}
+```
 
-#### Comprar productos en el carrito
+---
 
-- *URL:* /products/buy
-- *Método:* POST
-- *Descripción:* Permite a un cliente comprar los productos en su carrito.
-- *Autenticación:* Requiere autenticación.
-- *Encabezados:*
-  - authorization: ID del usuario.
-- *Respuesta exitosa:*
-  - *Código:* 200
-  - *Contenido:* Renderiza la página de factura con la compra realizada.
+#### 7. Ver historial de compras en formato JSON
 
-### Endpoints de Usuarios
+**Endpoint:** `GET /products/api/history`
 
-#### Registro de usuarios
+Este endpoint permite a los usuarios obtener su historial de compras en formato JSON.
 
-- *URL:* /users/register
-- *Método:* POST
-- *Descripción:* Permite a un nuevo usuario registrarse.
-- *Parámetros del cuerpo:*
-  - username: Nombre de usuario.
-  - password: Contraseña.
-- *Respuesta exitosa:*
-  - *Código:* 302 (Redirecciona a /products)
+    **URL:** `/products/api/history`
+    **Método:** `GET`
+    **Autenticación:** Requiere autenticación.
 
-#### Inicio de sesión
+    **Encabezados:**
+        `Authorization: <id_del_usuario>`
 
-- *URL:* /users/login
-- *Método:* POST
-- *Descripción:* Permite a un usuario iniciar sesión.
-- *Parámetros del cuerpo:*
-  - username: Nombre de usuario.
-  - password: Contraseña.
-- *Respuesta exitosa:*
-  - *Código:* 302 (Redirecciona a /products)
+**Ejemplo de petición:**
 
-#### Cierre de sesión
+```http
+GET http://127.0.0.1/products/api/history HTTP/1.1
+Authorization: sss2beqmkfqo65z6s1yii
+```
 
-- *URL:* /users/logout
-- *Método:* POST
-- *Descripción:* Permite a un usuario cerrar sesión.
-- *Respuesta exitosa:*
-  - *Código:* 302 (Redirecciona a /login)
+**Respuesta:**
 
+```json
+[
+  {
+    "id": 1,
+    "userId": "user_id",
+    "products": [
+      {
+        "product": {
+          "id": 1,
+          "name": "iPhone 14 Pro Max",
+          "description": "El iPhone 14 Pro Max es el buque insignia de Apple con su impresionante chip A16 Bionic, cámara de 48MP y pantalla Super Retina X
+
+DR de 6.7\".",
+          "price": 1099,
+          "quantity": 18,
+          "imageUrl": "https://bit.ly/4dM59WE"
+        },
+        "quantity": 2
+      }
+    ],
+    "totalAmount": 2198,
+    "date": "2023-05-17T12:34:56.789Z",
+    "qrCode": "data:image/png;base64,....."
+  }
+]
+```

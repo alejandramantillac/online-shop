@@ -28,7 +28,7 @@ router.post('/register', (req, res) => {
    * @property {string} password - The password of the user.
    * @property {string} role - The role of the user.
    */
-  const newUser = new User(User.users.length + 1, username, password, 'cliente');
+  const newUser = new User(User.generateId(), username, password, 'cliente');
   User.users.push(newUser);
   req.session.user = newUser;
 
